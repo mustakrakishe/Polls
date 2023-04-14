@@ -2,14 +2,26 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Core\View;
+use Core\Router;
 
-switch ($_SERVER['REQUEST_URI']) {
-    case '/':
-        View::make('guest', 'Polls');
-        break;
+$router = new Router;
 
-    default:
-        http_response_code(404);
-        echo '404 Page Not Found';
+include 'routes/web.php';
+
+$methods = $router->list()[$_SERVER['REQUEST_URI']] ?? [];
+
+if ($methods) {
+    $action = $methods[$_SERVER['REQUEST_METHOD']] ?? null;
+
+    if ($action) {
+        $action();
+        exit;
+    }
+
+    http_response_code(405);
+    echo 'Error 405: Method Not Allowed';
+    exit;
 }
+
+http_response_code(404);
+echo 'Error 404: Page Not Found';
