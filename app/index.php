@@ -1,8 +1,12 @@
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
+use Core\View;
+
 switch ($_SERVER['REQUEST_URI']) {
     case '/':
-        echo 'Hi, Guest!';
+        View::make('guest', 'Polls');
         break;
 
     default:
