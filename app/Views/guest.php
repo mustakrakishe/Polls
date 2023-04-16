@@ -1,4 +1,7 @@
-<?php include ('Views/layout/header.php'); ?>
+<?php
+    $title = 'Polls';
+    include ('Views/layout/header.php');
+?>
 
 <div class="text-center">Please, login or register!</div>
 

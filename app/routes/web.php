@@ -7,5 +7,5 @@ use Core\View;
  */
 
 $router->get('/', function () {
-    View::make('guest', 'Polls');
+    View::make('guest');
 });
