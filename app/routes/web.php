@@ -12,3 +12,4 @@ $router->get('/', function () {
 });
 
 $router->get('/register', [new AuthController(new View), 'showForm']);
+$router->post('/register', [new AuthController(new View), 'register']);

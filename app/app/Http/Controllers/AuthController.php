@@ -10,4 +10,9 @@ class AuthController extends Controller
     {
         $this->view->render('auth.register');
     }
+
+    public function register()
+    {
+        $this->view->render('auth.register');
+    }
 }
