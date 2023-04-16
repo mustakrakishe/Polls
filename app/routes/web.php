@@ -11,4 +11,4 @@ $router->get('/', function () {
     View::render('guest');
 });
 
-$router->get('/register', [new AuthController(new View), 'showRegisterPage']);
+$router->get('/register', [new AuthController(new View), 'showForm']);
