@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Contracts\RouterInterface;
+use Exception;
 
 class Router implements RouterInterface
 {
@@ -35,23 +36,11 @@ class Router implements RouterInterface
     protected function validate(string $url, string $method)
     {
         if (empty($this->routes[$url])) {
-            return $this->returnPageNotFound();
+            throw new Exception('Page Not Found', 404);
         }
 
         if (empty($this->routes[$url][$method])) {
-            return $this->returnMethodNotAllowed();
+            throw new Exception('Method Not Allowed', 405);
         }
-    }
-
-    protected function returnMethodNotAllowed()
-    {
-        http_response_code(405);
-        echo 'Error 405: Method Not Allowed';
-    }
-
-    protected function returnPageNotFound()
-    {
-        http_response_code(404);
-        echo 'Error 404: Page Not Found';
     }
 }
