@@ -16,7 +16,9 @@ class Validator implements ValidatorInterface
     {
         foreach ($rules as $field => $fieldRules) {
             foreach ($fieldRules as $rule) {
-                [$rule, $limit] = explode(':', $rule);
+                $ruleParts  = explode(':', $rule);
+                $rule       = $ruleParts[0];
+                $limit      = $ruleParts[1] ?? null;
 
                 if (isset($input[$field]) || $rule !== 'required') {
                     $isPassed = call_user_func([$this, $rule], $input[$field] ?? null, $limit);
