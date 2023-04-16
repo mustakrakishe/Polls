@@ -1,5 +1,6 @@
 <?php
 
+use Controllers\AuthController;
 use Core\View;
 
 /**
@@ -10,6 +11,4 @@ $router->get('/', function () {
     View::render('guest');
 });
 
-$router->get('/register', function () {
-    View::render('auth.register');
-});
+$router->get('/register', [new AuthController(new View), 'showRegisterPage']);
