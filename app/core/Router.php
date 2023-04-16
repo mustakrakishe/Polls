@@ -30,20 +30,17 @@ class Router
 
     public function route(string $url, string $method)
     {
+        if (empty($this->routes[$url])) {
+            return $this->returnPageNotFound();
+        }
 
-        $methods = $this->routes[$url] ?? [];
-
-        if ($methods) {
-            $action = $methods[$method] ?? null;
-
-            if ($action) {
-                return call_user_func($action);
-            }
-            
+        if (empty($this->routes[$url][$method])) {
             return $this->returnMethodNotAllowed();
         }
-            
-        return $this->returnPageNotFound();
+        
+        return call_user_func(
+            $this->routes[$url][$method]
+        );
     }
 
     protected function returnMethodNotAllowed()
