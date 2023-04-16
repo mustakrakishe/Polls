@@ -2,7 +2,9 @@
 
 namespace Core;
 
-class Router
+use Core\Contracts\RouterInterface;
+
+class Router implements RouterInterface
 {
     protected array $routes = [];
 
