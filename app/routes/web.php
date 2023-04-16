@@ -9,3 +9,7 @@ use Core\View;
 $router->get('/', function () {
     View::make('guest');
 });
+
+$router->get('/register', function () {
+    echo 'Register';
+});
