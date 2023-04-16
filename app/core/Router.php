@@ -2,25 +2,23 @@
 
 namespace Core;
 
-use Closure;
-
 class Router
 {
     protected array $routes = [];
 
-    public function add(string $method, string $url, Closure $action)
+    public function add(string $method, string $url, callable $callback)
     {
-        return $this->routes[$url][$method] = $action;
+        return $this->routes[$url][$method] = $callback;
     }
 
-    public function get(string $url, Closure $action)
+    public function get(string $url, callable $callback)
     {
-        return $this->add('GET', $url, $action);
+        return $this->add('GET', $url, $callback);
     }
 
-    public function post(string $url, Closure $action)
+    public function post(string $url, callable $callback)
     {
-        return $this->add('POST', $url, $action);
+        return $this->add('POST', $url, $callback);
     }
 
     public function list() : array
