@@ -1,10 +1,17 @@
 <?php $title = 'Register'; ?>
 
-<?php include('Views/layout/header.php'); ?>
+<?php 
+  include join(DIRECTORY_SEPARATOR, [
+    __DIR__,
+    '..',
+    'layout',
+    'header.php',
+  ]);
+?>
 
 <div class="text-center">
   <div class="w-100 m-auto" style="max-width: 300px;">
-    <form>
+    <form action="/register" method="post">
       <h1 class="h3 mb-3 fw-normal">Please login</h1>
 
       <div class="form-floating mb-1">
@@ -22,4 +29,11 @@
   </div>
 </div>
 
-<?php include('Views/layout/footer.php'); ?>
+<?php 
+  include join(DIRECTORY_SEPARATOR, [
+    __DIR__,
+    '..',
+    'layout',
+    'footer.php',
+  ]);
+?>

@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <title><?= $title ?? '' ?></title>
 
-    <link rel="stylesheet" href="Views/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= join(DIRECTORY_SEPARATOR, [
+        'resources',
+        'css',
+        'bootstrap.min.css'
+    ]); ?>">
 </head>
 
 <body>

@@ -10,6 +10,12 @@ class View implements ViewInterface
     {
         $viewRelativePath = str_replace('.', DIRECTORY_SEPARATOR, $view) . '.php';
 
-        include('Views' . DIRECTORY_SEPARATOR . $viewRelativePath);
+        include join(DIRECTORY_SEPARATOR, [
+            __DIR__,
+            '..',
+            'resources',
+            'views',
+            $viewRelativePath,
+        ]);
     }
 }

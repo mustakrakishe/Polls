@@ -1,6 +1,6 @@
 <?php
 
-use Controllers\AuthController;
+use App\Controllers\AuthController;
 use Core\View;
 
 /**
