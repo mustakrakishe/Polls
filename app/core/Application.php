@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Contracts\RouterInterface;
+use Exception;
 
 class Application
 {
@@ -15,9 +16,14 @@ class Application
 
     public function run()
     {
-        $this->router->route(
-            $_SERVER['REQUEST_URI'],
-            $_SERVER['REQUEST_METHOD']
-        );
+        try {
+            $this->router->route(
+                $_SERVER['REQUEST_URI'],
+                $_SERVER['REQUEST_METHOD']
+            );
+        } catch (Exception $e) {
+            http_response_code($e->getCode());
+            echo 'Error ' . $e->getCode() . ': ' . $e->getMessage();
+        }
     }
 }
