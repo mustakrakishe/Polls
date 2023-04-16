@@ -30,6 +30,15 @@ class Router
 
     public function route(string $url, string $method)
     {
+        $this->validate($url, $method);
+        
+        return call_user_func(
+            $this->routes[$url][$method]
+        );
+    }
+
+    protected function validate(string $url, string $method)
+    {
         if (empty($this->routes[$url])) {
             return $this->returnPageNotFound();
         }
@@ -37,10 +46,6 @@ class Router
         if (empty($this->routes[$url][$method])) {
             return $this->returnMethodNotAllowed();
         }
-        
-        return call_user_func(
-            $this->routes[$url][$method]
-        );
     }
 
     protected function returnMethodNotAllowed()
