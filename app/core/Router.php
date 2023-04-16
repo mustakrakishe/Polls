@@ -37,15 +37,23 @@ class Router
             $action = $methods[$method] ?? null;
 
             if ($action) {
-                call_user_func($action);
-                exit;
+                return call_user_func($action);
             }
-
-            http_response_code(405);
-            echo 'Error 405: Method Not Allowed';
-            exit;
+            
+            return $this->returnMethodNotAllowed();
         }
+            
+        return $this->returnPageNotFound();
+    }
 
+    protected function returnMethodNotAllowed()
+    {
+        http_response_code(405);
+        echo 'Error 405: Method Not Allowed';
+    }
+
+    protected function returnPageNotFound()
+    {
         http_response_code(404);
         echo 'Error 404: Page Not Found';
     }
