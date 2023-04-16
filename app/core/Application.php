@@ -16,11 +16,11 @@ class Application
 
     public function run()
     {
+        $url    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $method = $_SERVER['REQUEST_METHOD'];
+
         try {
-            $this->router->route(
-                $_SERVER['REQUEST_URI'],
-                $_SERVER['REQUEST_METHOD']
-            );
+            $this->router->route($url, $method);
         } catch (Exception $e) {
             http_response_code($e->getCode());
             echo 'Error ' . $e->getCode() . ': ' . $e->getMessage();
