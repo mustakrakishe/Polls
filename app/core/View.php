@@ -2,7 +2,9 @@
 
 namespace Core;
 
-class View
+use Core\Contracts\ViewInterface;
+
+class View implements ViewInterface
 {
     public static function make(string $view, array $parameters = [])
     {
