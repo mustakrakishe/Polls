@@ -7,9 +7,9 @@ use Core\View;
  */
 
 $router->get('/', function () {
-    View::make('guest');
+    View::render('guest');
 });
 
 $router->get('/register', function () {
-    View::make('auth.register');
+    View::render('auth.register');
 });

@@ -4,5 +4,5 @@ namespace Core\Contracts;
 
 interface ViewInterface
 {
-    public static function make(string $view, array $parameters = []);
+    public static function render(string $view, array $parameters = []);
 }

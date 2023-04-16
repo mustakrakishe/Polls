@@ -6,7 +6,7 @@ use Core\Contracts\ViewInterface;
 
 class View implements ViewInterface
 {
-    public static function make(string $view, array $parameters = [])
+    public static function render(string $view, array $parameters = [])
     {
         $viewRelativePath = str_replace('.', DIRECTORY_SEPARATOR, $view) . '.php';
 
