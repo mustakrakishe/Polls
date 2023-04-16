@@ -27,4 +27,26 @@ class Router
     {
         return $this->routes;
     }
+
+    public function route(string $url, string $method)
+    {
+
+        $methods = $this->routes[$url] ?? [];
+
+        if ($methods) {
+            $action = $methods[$method] ?? null;
+
+            if ($action) {
+                call_user_func($action);
+                exit;
+            }
+
+            http_response_code(405);
+            echo 'Error 405: Method Not Allowed';
+            exit;
+        }
+
+        http_response_code(404);
+        echo 'Error 404: Page Not Found';
+    }
 }

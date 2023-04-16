@@ -2,11 +2,13 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Core\Request;
 use Core\Router;
 
 $router = new Router;
 
 include 'routes/web.php';
 
-Request::resolve($router->list());
+$router->route(
+    $_SERVER['REQUEST_URI'],
+    $_SERVER['REQUEST_METHOD']
+);
