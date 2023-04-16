@@ -11,5 +11,5 @@ $router->get('/', function () {
 });
 
 $router->get('/register', function () {
-    echo 'Register';
+    View::make('auth.register');
 });
