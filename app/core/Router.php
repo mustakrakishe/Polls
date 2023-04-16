@@ -23,11 +23,6 @@ class Router implements RouterInterface
         return $this->add('POST', $url, $callback);
     }
 
-    public function list() : array
-    {
-        return $this->routes;
-    }
-
     public function route(string $url, string $method)
     {
         $this->validate($url, $method);
