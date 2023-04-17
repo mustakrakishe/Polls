@@ -25,8 +25,8 @@ class AuthController extends Controller
             header('Location: /personal');
         }
 
-        $token = bin2hex(
-            random_bytes(getenv('API_TOKEN_LENGTH'))
+        $token = $this->generateToken(
+            getenv('API_TOKEN_LENGTH')
         );
 
         $userId = User::create([
@@ -82,5 +82,12 @@ class AuthController extends Controller
         unset($_SESSION['user_id']);
 
         header('Location: /');
+    }
+
+    protected function generateToken(int $length)
+    {
+        return bin2hex(
+            random_bytes($length)
+        );
     }
 }
