@@ -12,6 +12,10 @@ use Core\View;
  */
 
 $router->get('/', function () {
+    if (isset($_SESSION['user_id'])) {
+        header('Location: /personal');
+    }
+
     View::render('guest');
 });
 
