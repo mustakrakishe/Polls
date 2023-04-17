@@ -12,11 +12,19 @@ class AuthController extends Controller
 {
     public function showRegisterPage()
     {
+        if (isset($_SESSION['user_id'])) {
+            header('Location: /personal');
+        }
+
         $this->view->render('auth.register');
     }
 
     public function register(RegisterRequest $request)
     {
+        if (isset($_SESSION['user_id'])) {
+            header('Location: /personal');
+        }
+
         $userId = User::create([
             'email'         => $request->input('email'),
             'password_hash' => md5($request->input('password')),
@@ -31,11 +39,19 @@ class AuthController extends Controller
 
     public function showLoginPage()
     {
+        if (isset($_SESSION['user_id'])) {
+            header('Location: /personal');
+        }
+
         $this->view->render('auth.login');
     }
 
     public function login(LoginRequest $request)
     {
+        if (isset($_SESSION['user_id'])) {
+            header('Location: /personal');
+        }
+        
         $user = User::where([
             ['email',           $request->input('email')],
             ['password_hash',   md5($request->input('password'))],
