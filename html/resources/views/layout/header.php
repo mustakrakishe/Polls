@@ -21,8 +21,13 @@
                 </a>
 
                 <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                    <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Login</a>
-                    <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/register">Register</a>
+                    <?php if (isset($parameters['user'])): ?>
+                        <div class="me-3 py-2"><?= $parameters['user']['email'] ?></div>
+                        <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/logout">Logout</a>
+                    <?php else: ?>
+                        <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/login">Login</a>
+                        <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/register">Register</a>
+                    <?php endif; ?>
                 </nav>
             </div>
         </header>

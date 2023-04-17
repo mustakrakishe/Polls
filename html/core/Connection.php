@@ -47,6 +47,25 @@ class Connection implements ConnectionInterface
         return $stmt->execute();
     }
 
+    public function select(string $table, array $where = [], int $limit = null)
+    {
+        $sql = "SELECT * FROM $table";
+
+        if ($where) {
+            $whereStatementStrings = array_map(function ($statementParts) {
+                return $statementParts[0] . '="' . $statementParts[1] . '"';
+            }, $where);
+
+            $sql .= ' WHERE ' . join(' AND ', $whereStatementStrings);
+        }
+
+        if (!is_null($limit)) {
+            $sql .= " LIMIT $limit";
+        }
+
+        return $this->dbh->query($sql)->fetchAll();
+    }
+
     public function getLastInsertId(string $table = null)
     {
         return $this->dbh->lastInsertId($table);

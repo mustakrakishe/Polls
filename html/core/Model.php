@@ -9,11 +9,32 @@ class Model
     protected static ConnectionInterface $connection;
     protected static string $table;
 
+    protected static array $where;
+    protected static int $limit;
+
     public static function create(array $input)
     {
         static::connection()->insert(static::$table, $input);
 
         return static::connection()->getLastInsertId(static::$table);
+    }
+
+    /**
+     * @param array $statements an array of [$field, $condition, $value] for each statement
+     */
+    public static function where(array $statements)
+    {
+        $model = new static;
+        $model::$where = $statements;
+
+        return $model;
+    }
+
+    public static function first()
+    {
+        static::$limit = 1;
+
+        return static::connection()->select(static::$table, static::$where, static::$limit)[0] ?? null;
     }
 
     protected static function connection()
