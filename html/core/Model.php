@@ -2,11 +2,11 @@
 
 namespace Core;
 
-use PDO;
+use Core\Contracts\ConnectionInterface;
 
 class Model
 {
-    protected static PDO $connection;
+    protected static ConnectionInterface $connection;
     protected static string $table;
 
     public static function create(array $input)
@@ -39,23 +39,16 @@ class Model
     protected static function connection()
     {
         if (!isset(static::$connection)) {
-            $dsn        = static::makeDsn(
-                            getenv('DB_DRIVER'),
-                            getenv('DB_HOST'),
-                            getenv('DB_PORT'),
-                            getenv('DB_DATABASE')
-                        );
-            $username   = getenv('DB_USERNAME');
-            $password   = getenv('DB_PASSWORD');
-
-            static::$connection =  new PDO($dsn, $username, $password);
+            static::$connection = new Connection(
+                getenv('DB_DRIVER'),
+                getenv('DB_HOST'),
+                getenv('DB_PORT'),
+                getenv('DB_DATABASE'),
+                getenv('DB_USERNAME'),
+                getenv('DB_PASSWORD')
+            );
         }
         
         return static::$connection;
-    }
-
-    protected static function makeDsn(string $driver, string $host, int $port, string $database) : string
-    {
-        return "$driver:host=$host;port=$port;dbname=$database";
     }
 }
