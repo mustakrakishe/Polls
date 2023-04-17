@@ -5,7 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use Core\Application;
 use Core\Router;
 
-foreach (file('.env', FILE_SKIP_EMPTY_LINES) as $assigment) {
+foreach (file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $assigment) {
     putenv($assigment);
 }
 
