@@ -25,13 +25,18 @@ class AuthController extends Controller
             header('Location: /personal');
         }
 
+        $token = bin2hex(
+            random_bytes(getenv('API_TOKEN_LENGTH'))
+        );
+
         $userId = User::create([
             'email'         => $request->input('email'),
             'password_hash' => md5($request->input('password')),
-            'token_hash'    => md5(random_bytes(getenv('API_TOKEN_LENGTH'))),
+            'token_hash'    => md5($token),
         ]);
 
-        $_SESSION['user_id'] = $userId;
+        $_SESSION['user_id']    = $userId;
+        $_SESSION['token']      = $token;
 
         header('Location: /personal');
     }

@@ -14,10 +14,16 @@ class UserController extends Controller
             throw new Exception('Please, register or login.', 401);
         }
 
-        $user = User::where([
+        $parameters['user'] = User::where([
             ['id', $_SESSION['user_id']],
         ])->first();
 
-        $this->view->render('user.personal', compact('user'));
+        if (isset($_SESSION['token'])) {
+            $parameters['token'] = $_SESSION['token'];
+
+            unset($_SESSION['token']);
+        }
+
+        $this->view->render('user.personal', $parameters);
     }
 }
