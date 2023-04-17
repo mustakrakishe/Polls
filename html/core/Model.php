@@ -37,6 +37,14 @@ class Model
         return static::connection()->select(static::$table, static::$where, static::$limit)[0] ?? null;
     }
 
+    public static function table(string $table)
+    {
+        $model = new static;
+        $model::$table = $table;
+
+        return $model;
+    }
+
     protected static function connection()
     {
         if (!isset(static::$connection)) {
