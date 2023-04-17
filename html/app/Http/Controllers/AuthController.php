@@ -23,6 +23,6 @@ class AuthController extends Controller
             'token_hash'    => md5(random_bytes(getenv('API_TOKEN_LENGTH'))),
         ]);
 
-        $this->view->render('auth.register');
+        header('Location: /personal');
     }
 }
