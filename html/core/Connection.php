@@ -7,7 +7,7 @@ use PDO;
 
 class Connection implements ConnectionInterface
 {
-    protected PDO $dbh;
+    protected ?PDO $dbh;
 
     public function __construct(string $driver, string $host, int $port, string $database, string $username, string $password)
     {
@@ -45,5 +45,10 @@ class Connection implements ConnectionInterface
         extract($input);
 
         return $stmt->execute();
+    }
+
+    public function getLastInsertId(string $table = null)
+    {
+        return $this->dbh->lastInsertId($table);
     }
 }
