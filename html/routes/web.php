@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Requests\Auth\RegisterRequest;
 use Core\Validation\Validator;
 use Core\View;
@@ -20,4 +21,10 @@ $router->post('/register', function () {
     $controller = new AuthController(new View);
 
     return $controller->register($request);
+});
+
+$router->get('/personal', function () {
+    $controller = new UserController(new View);
+
+    return $controller->index();
 });
