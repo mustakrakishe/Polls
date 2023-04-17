@@ -24,7 +24,7 @@ class Model
         $stmt = $dbh->prepare("INSERT INTO $table ($columnStr) VALUES ($paramStr);");
         
         foreach ($params as $i => $param) {
-            $stmt->bindParam($param, $columns[$i]);
+            $stmt->bindParam($param, ${$columns[$i]});
         }
 
         extract($input);
