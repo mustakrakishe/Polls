@@ -33,6 +33,8 @@ $router->post('/login', function () {
     return $controller->login($request);
 });
 
+$router->get('/logout', [new AuthController(new View), 'logout']);
+
 $router->get('/personal', function () {
     $controller = new UserController(new View);
 

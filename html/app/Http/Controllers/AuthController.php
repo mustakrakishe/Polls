@@ -55,4 +55,11 @@ class AuthController extends Controller
 
         header('Location: /personal');
     }
+
+    public function logout()
+    {
+        unset($_SESSION['user_id']);
+
+        header('Location: /');
+    }
 }
