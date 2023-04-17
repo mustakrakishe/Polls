@@ -25,10 +25,9 @@ class Application
             $this->router->route($url, $method);
         } catch (Exception $e) {
             if ($e->getCode() === 422) {
-                http_response_code(303);
-                header('Location: ' . $_SERVER['HTTP_REFERER']);
+                $header = 'Location: ' . $_SERVER['HTTP_REFERER'];
 
-                return;
+                return header($header, true, 303);
             }
 
             http_response_code($e->getCode());
