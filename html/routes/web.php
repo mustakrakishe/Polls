@@ -39,8 +39,4 @@ $router->post('/login', function () {
 
 $router->get('/logout', [new AuthController(new View), 'logout']);
 
-$router->get('/personal', function () {
-    $controller = new UserController(new View);
-
-    return $controller->index();
-});
+$router->get('/personal', [new UserController(new View), 'index']);
