@@ -8,6 +8,6 @@ class UserController extends Controller
 {
     public function index()
     {
-        echo 'Personal';
+        $this->view->render('user.personal');
     }
 }
