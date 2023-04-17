@@ -15,9 +15,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $user = new User;
-
-        $user->create([
+        User::create([
             'email'         => $request->input('email'),
             'password_hash' => md5($request->input('password')),
             'token_hash'    => md5(random_bytes(getenv('API_TOKEN_LENGTH'))),
