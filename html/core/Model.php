@@ -11,7 +11,9 @@ class Model
 
     public static function create(array $input)
     {
-        return static::connection()->insert(static::$table, $input);
+        static::connection()->insert(static::$table, $input);
+
+        return static::connection()->getLastInsertId(static::$table);
     }
 
     protected static function connection()
