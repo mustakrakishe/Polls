@@ -12,6 +12,7 @@ class RegisterRequest extends AbstractRequest
             'email' => [
                 'required',
                 'email',
+                'unique:users,email'
             ],
             'password' => [
                 'required',
