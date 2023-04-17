@@ -8,7 +8,7 @@ use Core\Controller;
 
 class AuthController extends Controller
 {
-    public function showForm()
+    public function showRegisterPage()
     {
         $this->view->render('auth.register');
     }

@@ -14,7 +14,7 @@ $router->get('/', function () {
     View::render('guest');
 });
 
-$router->get('/register', [new AuthController(new View), 'showForm']);
+$router->get('/register', [new AuthController(new View), 'showRegisterPage']);
 
 $router->post('/register', function () {
     $request    = new RegisterRequest($_POST, new Validator);
