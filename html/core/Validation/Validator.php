@@ -17,14 +17,20 @@ class Validator implements ValidatorInterface
         foreach ($rules as $field => $fieldRules) {
             foreach ($fieldRules as $rule) {
                 $ruleParts  = explode(':', $rule);
-                $rule       = $ruleParts[0];
-                $limit      = $ruleParts[1] ?? null;
+
+                $method     = $ruleParts[0];
+                
+                if (isset($ruleParts[1])) {
+                    $arguments = explode(',', $ruleParts[1]);
+                } else {
+                    $arguments = [];
+                }
 
                 if (isset($input[$field]) || $rule !== 'required') {
-                    $isPassed = call_user_func([$this, $rule], $input[$field] ?? null, $limit);
+                    $isPassed = call_user_func([$this, $method], $input[$field] ?? null, ...$arguments);
     
                     if (!$isPassed) {
-                        $this->errors[$field][] = $this->message($rule, $field, $limit);
+                        $this->errors[$field][] = $this->message($method, $field, ...$arguments);
                     }
                 }
             }
@@ -38,16 +44,16 @@ class Validator implements ValidatorInterface
         }
     }
 
-    protected function message(string $rule, string $field, int $limit = null)
+    protected function message(string $rule, string $field, ...$arguments)
     {
         $search = [
             ':attribute',
-            ':limit',
+            ...array_map(fn ($argument) => ":$argument", $arguments),
         ];
 
         $replace = [
             $field,
-            $limit,
+            ...$arguments,
         ];
 
         $subject = $this->messages()[$rule];
@@ -60,7 +66,8 @@ class Validator implements ValidatorInterface
         return [
             'required'  => 'The :attribute field is required.',
             'email'     => 'The :attribute must be a valid email adress.',
-            'min'       => 'The :attribute must be at least :limit characters'
+            'min'       => 'The :attribute must be at least :limit characters.',
+            'unique'    => 'The :attribute must be unique.',
         ];
     }
 
