@@ -18,13 +18,32 @@ class Connection implements ConnectionInterface
         );
     }
 
+    public function __destruct()
+    {
+        $this->dbh = null;
+    }
+
     protected static function makeDsn(string $driver, string $host, int $port, string $database) : string
     {
         return "$driver:host=$host;port=$port;dbname=$database";
     }
 
-    public function __call($name, $arguments)
+    public function insert(string $table, array $input)
     {
-        return call_user_func_array([$this->dbh, $name], $arguments);
+        $columns    = array_keys($input);
+        $params     = array_map(fn ($column) => ":$column", $columns);
+
+        $columnStr  = join(',', $columns);
+        $paramStr   = join(',', $params);
+
+        $stmt = $this->dbh->prepare("INSERT INTO $table ($columnStr) VALUES ($paramStr);");
+        
+        foreach ($params as $i => $param) {
+            $stmt->bindParam($param, ${$columns[$i]});
+        }
+
+        extract($input);
+
+        return $stmt->execute();
     }
 }

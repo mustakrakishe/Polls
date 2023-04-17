@@ -11,29 +11,7 @@ class Model
 
     public static function create(array $input)
     {
-        $dbh = static::connection();
-
-        $table = static::$table;
-
-        $columns    = array_keys($input);
-        $params     = array_map(fn ($column) => ":$column", $columns);
-
-        $columnStr  = join(',', $columns);
-        $paramStr   = join(',', $params);
-
-        $stmt = $dbh->prepare("INSERT INTO $table ($columnStr) VALUES ($paramStr);");
-        
-        foreach ($params as $i => $param) {
-            $stmt->bindParam($param, ${$columns[$i]});
-        }
-
-        extract($input);
-
-        $success = $stmt->execute();
-
-        $dbh = null;
-
-        return $success;
+        return static::connection()->insert(static::$table, $input);
     }
 
     protected static function connection()
