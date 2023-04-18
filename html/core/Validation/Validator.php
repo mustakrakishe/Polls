@@ -2,39 +2,27 @@
 
 namespace Core\Validation;
 
+use Core\ORM\Contracts\ModelInterface;
 use Core\Validation\Concerns\Rules;
 use Core\Validation\Contracts\ValidatorInterface;
 use Exception;
+use ReflectionMethod;
 
 class Validator implements ValidatorInterface
 {
     use Rules;
 
+    protected ModelInterface $model;
     protected array $errors = [];
+
+    public function __construct(ModelInterface $model)
+    {
+        $this->model = $model;
+    }
 
     public function validate(array $input, array $rules)
     {
-        foreach ($rules as $field => $fieldRules) {
-            foreach ($fieldRules as $rule) {
-                $ruleParts  = explode(':', $rule);
-
-                $method     = $ruleParts[0];
-                
-                if (isset($ruleParts[1])) {
-                    $arguments = explode(',', $ruleParts[1]);
-                } else {
-                    $arguments = [];
-                }
-
-                if (isset($input[$field]) || $rule !== 'required') {
-                    $isPassed = call_user_func([$this, $method], $input[$field] ?? null, ...$arguments);
-    
-                    if (!$isPassed) {
-                        $this->errors[$field][] = $this->message($method, $field, ...$arguments);
-                    }
-                }
-            }
-        }
+        array_walk($rules, [$this, 'validateField'], $input);
 
         if ($this->errors()) {
             $_SESSION['errors'] = $this->errors();
@@ -44,16 +32,65 @@ class Validator implements ValidatorInterface
         }
     }
 
-    protected function message(string $rule, string $field, ...$arguments)
+    protected function validateField(array $fieldRules, string $fieldName, array $input)
     {
+        $value = $input[$fieldName] ?? null;
+
+        array_walk($fieldRules, [$this, 'applyRule'], compact('value', 'fieldName'));
+    }
+
+    protected function applyRule($rule, $ruleIndex, $args)
+    {
+        extract($args);
+        extract($this->parseRule($rule));
+
+        if (!empty($value) || $rule === 'required') {
+            $isPassed = call_user_func([$this, $method], $value, ...$parameterValues);
+
+            if (!$isPassed) {
+                $this->errors[$fieldName][] = $this->message($method, $fieldName, $parameterKeys, $parameterValues);
+            }
+        }
+    }
+
+    protected function parseRule(string $string)
+    {
+        $ruleParts      = explode(':', $string);
+        $method         = $ruleParts[0];
+
+        $hasArguments   = count($ruleParts) > 1;
+
+        return [
+            'method'            => $method,
+            'parameterValues'   => $hasArguments ? explode(',', $ruleParts[1]) : [],
+            'parameterKeys'     => $hasArguments ? $this->getRuleArgumentKeys($this, $method) : [],
+        ];
+    }
+
+    protected function getRuleArgumentKeys(object $object, string $method)
+    {
+        $reflectionMethod       = new ReflectionMethod($object, $method);
+        $reflectionParameters   = $reflectionMethod->getParameters();
+
+        $withoutColumnName      = array_slice($reflectionParameters, 1);
+
+        return array_map(function ($reflectionParameter) {
+            return $reflectionParameter->getName();
+        }, $withoutColumnName);
+    }
+
+    protected function message(string $rule, string $field, array $parameterKeys, array $parameterValues)
+    {
+        $parameterKeyTemplates = array_map(fn ($key) => ":$key", $parameterKeys);
+
         $search = [
             ':attribute',
-            ...array_map(fn ($argument) => ":$argument", $arguments),
+            ...$parameterKeyTemplates,
         ];
 
         $replace = [
             $field,
-            ...$arguments,
+            ...$parameterValues,
         ];
 
         $subject = $this->messages()[$rule];

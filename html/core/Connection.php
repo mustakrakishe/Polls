@@ -4,15 +4,17 @@ namespace Core;
 
 use Core\Contracts\ConnectionInterface;
 use PDO;
+use PDOStatement;
 
 class Connection implements ConnectionInterface
 {
-    protected ?PDO $dbh;
+    protected ?PDO $pdo;
+    protected PDOStatement $statement;
 
     public function __construct(string $driver, string $host, int $port, string $database, string $username, string $password)
     {
-        $this->dbh = new PDO(
-            $this->makeDsn($driver, $host, $port, $database),
+        $this->pdo = new PDO(
+            "$driver:host=$host;port=$port;dbname=$database",
             $username,
             $password
         );
@@ -20,54 +22,26 @@ class Connection implements ConnectionInterface
 
     public function __destruct()
     {
-        $this->dbh = null;
+        $this->pdo = null;
     }
 
-    protected static function makeDsn(string $driver, string $host, int $port, string $database) : string
+    public function executePreparedStatement(string $statement, array $parameters = [])
     {
-        return "$driver:host=$host;port=$port;dbname=$database";
-    }
+        $this->statement = $this->pdo->prepare($statement);
 
-    public function insert(string $table, array $input)
-    {
-        $columns    = array_keys($input);
-        $params     = array_map(fn ($column) => ":$column", $columns);
-
-        $columnStr  = join(',', $columns);
-        $paramStr   = join(',', $params);
-
-        $stmt = $this->dbh->prepare("INSERT INTO $table ($columnStr) VALUES ($paramStr);");
-        
-        foreach ($params as $i => $param) {
-            $stmt->bindParam($param, ${$columns[$i]});
+        foreach (array_keys($parameters) as $column) {
+            $this->statement->bindParam(":$column", ${$column});
         }
 
-        extract($input);
+        extract($parameters);
 
-        return $stmt->execute();
+        $this->statement->execute();
+
+        return $this->statement->fetchAll();
     }
 
-    public function select(string $table, array $where = [], int $limit = null)
+    public function lastInsertId()
     {
-        $sql = "SELECT * FROM $table";
-
-        if ($where) {
-            $whereStatementStrings = array_map(function ($statementParts) {
-                return $statementParts[0] . '="' . $statementParts[1] . '"';
-            }, $where);
-
-            $sql .= ' WHERE ' . join(' AND ', $whereStatementStrings);
-        }
-
-        if (!is_null($limit)) {
-            $sql .= " LIMIT $limit";
-        }
-
-        return $this->dbh->query($sql)->fetchAll();
-    }
-
-    public function getLastInsertId(string $table = null)
-    {
-        return $this->dbh->lastInsertId($table);
+        return $this->pdo->lastInsertId();
     }
 }

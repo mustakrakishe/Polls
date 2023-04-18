@@ -2,9 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
-use Core\Validation\Validator;
 use Core\View;
 
 /**
@@ -19,24 +16,14 @@ $router->get('/', function () {
     View::render('guest');
 });
 
-$router->get('/register', [new AuthController(new View), 'showRegisterPage']);
+$router->get('/register', [AuthController::class, 'showRegisterPage']);
 
-$router->post('/register', function () {
-    $request    = new RegisterRequest($_POST, new Validator);
-    $controller = new AuthController(new View);
+$router->post('/register', [AuthController::class, 'register']);
 
-    return $controller->register($request);
-});
+$router->get('/login', [AuthController::class, 'showLoginPage']);
 
-$router->get('/login', [new AuthController(new View), 'showLoginPage']);
+$router->post('/login', [AuthController::class, 'login']);
 
-$router->post('/login', function () {
-    $request    = new LoginRequest($_POST, new Validator);
-    $controller = new AuthController(new View);
+$router->get('/logout', [AuthController::class, 'logout']);
 
-    return $controller->login($request);
-});
-
-$router->get('/logout', [new AuthController(new View), 'logout']);
-
-$router->get('/personal', [new UserController(new View), 'index']);
+$router->get('/personal', [UserController::class, 'index']);

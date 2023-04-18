@@ -9,28 +9,26 @@ class Router implements RouterInterface
 {
     protected array $routes = [];
 
-    public function add(string $method, string $url, callable $callback)
+    public function add(string $method, string $url, $action)
     {
-        return $this->routes[$url][$method] = $callback;
+        return $this->routes[$url][$method] = $action;
     }
 
-    public function get(string $url, callable $callback)
+    public function get(string $url, $action)
     {
-        return $this->add('GET', $url, $callback);
+        return $this->add('GET', $url, $action);
     }
 
-    public function post(string $url, callable $callback)
+    public function post(string $url, $action)
     {
-        return $this->add('POST', $url, $callback);
+        return $this->add('POST', $url, $action);
     }
 
     public function route(string $url, string $method)
     {
         $this->validate($url, $method);
         
-        return call_user_func(
-            $this->routes[$url][$method]
-        );
+        return $this->routes[$url][$method];
     }
 
     protected function validate(string $url, string $method)

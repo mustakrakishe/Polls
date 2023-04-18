@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User;
 use Core\Controller;
 use Exception;
 
@@ -29,11 +28,12 @@ class AuthController extends Controller
             getenv('API_TOKEN_LENGTH')
         );
 
-        $userId = User::create([
-            'email'         => $request->input('email'),
-            'password_hash' => md5($request->input('password')),
-            'token_hash'    => md5($token),
-        ]);
+        $userId = $this->model
+                       ->create('users', [
+                           'email'         => $request->input('email'),
+                           'password_hash' => md5($request->input('password')),
+                           'token_hash'    => md5($token),
+                       ]);
 
         $_SESSION['user_id']    = $userId;
         $_SESSION['token']      = $token;
@@ -57,12 +57,13 @@ class AuthController extends Controller
             header('Location: /personal');
         }
         
-        $user = User::where([
-            ['email',           $request->input('email')],
-            ['password_hash',   md5($request->input('password'))],
-        ])->first();
+        $user = $this->model
+                    ->first('users', [
+                        ['email', '=', $request->input('email')],
+                        ['password_hash', '=', md5($request->input('password'))],
+                    ]);
 
-        if (is_null($user)) {
+        if ($user === []) {
             $_SESSION['errors']['email'][]      = 'Email or Password is wrong.';
             $_SESSION['errors']['password'][]   = 'Email or Password is wrong.';
 

@@ -2,10 +2,12 @@
 
 namespace Core\Validation\Concerns;
 
-use Core\Model;
+use Core\ORM\Contracts\ModelInterface;
 
 trait Rules
 {
+    protected ModelInterface $model;
+
     protected function required($value)
     {
         return !empty($value);
@@ -23,10 +25,11 @@ trait Rules
 
     protected function unique(string $value, string $table, string $column)
     {
-        $record = Model::table($table)->where([
-            [$column, $value],
-        ])->first();
+        $record = $this->model
+                       ->first($table, [
+                           [$column, '=', $value]
+                       ]);
 
-        return is_null($record);
+        return $record === [];
     }
 }
