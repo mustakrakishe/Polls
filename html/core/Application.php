@@ -30,6 +30,10 @@ class Application
                 return header($header, true, 303);
             }
 
+            if ($e->getCode() === 401) {
+                return header('Location: /', true, 303);
+            }
+
             http_response_code($e->getCode());
             echo 'Error ' . $e->getCode() . ': ' . $e->getMessage();
         }
